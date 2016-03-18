@@ -31,6 +31,7 @@ event_in_course(csen601, quiz1, quiz).
 event_in_course(csen601, quiz2, quiz).
 event_in_course(csen601, quiz3, quiz).
 event_in_course(csen601, project, evaluation).
+
 event_in_course(csen603, quiz1, quiz).
 event_in_course(csen603, quiz2, quiz).
 event_in_course(csen603, quiz3, quiz).
@@ -50,11 +51,11 @@ holiday(3,monday).
 holiday(5,tuesday).
 holiday(10,sunday).
 
-
 studying(csen403, group4MET).
 studying(csen401, group4MET).
 studying(csen402, group4MET).
-studying(csen402, group4MET).
+studying(math401, group4MET).
+studying(elct401, group4MET).
 
 studying(csen601, group6MET).
 studying(csen602, group6MET).
@@ -68,6 +69,7 @@ should_precede(csen403,quiz2,quiz3).
 quizslot(group4MET, tuesday, 1).
 quizslot(group4MET, thursday, 1).
 quizslot(group6MET, saturday, 5).
+quizslot(group6MET, wednesday, 1).
 
 
 day(saturday, 1).
