@@ -69,7 +69,7 @@ should_precede(csen403,quiz2,quiz3).
 quizslot(group4MET, tuesday, 1).
 quizslot(group4MET, thursday, 1).
 quizslot(group6MET, saturday, 5).
-quizslot(group6MET, wednesday, 1).
+% quizslot(group6MET, wednesday, 1).
 
 
 day(saturday, 1).
@@ -78,4 +78,4 @@ day(monday, 3).
 day(tuesday, 4).
 day(wednesday, 5).
 day(thursday, 6).
-day(friday, 7).
+% day(friday, 7).

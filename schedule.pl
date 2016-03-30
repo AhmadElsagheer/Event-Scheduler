@@ -1,17 +1,19 @@
-% Schedule = [event(Course_Code, Event_Name, Event_Type,
+% Schedule = [event(Group, Course_Code, Event_Name, Event_Type,
 %               timing(Week_Number, Week_day, Day_slot))]
 
 % Returns event timings of G according to Schedule
 event_timings(_, [], []).
 event_timings(G, Schedule, Event_Timings):-
-                    Schedule = [ET_H | ET_T], ET_H = event(C, _, _, _),
-                    studying(C, G), event_timings(G, ET_T, R),
-                    Event_Timings = [ET_H|R].
+                    Schedule = [ET_H | ET_T],
+                    ET_H = event(G, C, E_Name, E_Type, Timing),
+                    ET = event(C, E_Name, E_Type, Timing),
+                    event_timings(G, ET_T, R),
+                    Event_Timings = [ET|R].
 
 event_timings(G, Schedule, Event_Timings):-
                     Schedule = [ET_H | ET_T],
-                    ET_H = event(C, _, _, _),
-                    \+studying(C, G),
+                    ET_H = event(G1, _, _, _, _),
+                    G1 \= G,
                     event_timings(G, ET_T, Event_Timings).
 
 precede(G, Schedule):-
@@ -170,12 +172,19 @@ no_holidays([ET_H|ET_T]):-
                     ET_H = event(_, _, _, timing(W, D, _)),
                     \+holiday(W, D), no_holidays(ET_T).
 
-schedule(Weeks, Schedule):-
-                    bagof(event(C, E_Name, E_Type),
-                                        event_in_course(C, E_Name, E_Type), All_Events),
-                    setof(G, C^studying(C, G), All_Groups),
+
+% schedule(Weeks, Schedule
+                    % setof(G, C^studying(C, G), All_Groups),
+
+group_has_event(G, C, E_Name, E_Type):-
+                    studying(C, G), event_in_course(C, E_Name, E_Type).
+
+schedule(Weeks,Schedule):-
+                    setof(event(G, C, E_Name, E_Type),
+                                        group_has_event(G, C, E_Name, E_Type), All_Events),
                     bagof(timing(W, D, S), find_timing(1, Weeks, W, D, S), All_Timings),
-                    schedule(All_Events, All_Groups, All_Timings, [], Schedule).
+                    schedule(All_Events,All_Timings,[],Schedule).
+
 
 find_timing(Week_Number, Weeks, W, D, S):-
                     Week_Number =< Weeks, W = Week_Number, day(D, _), member(S, [1, 2, 3, 4, 5]).
@@ -183,36 +192,19 @@ find_timing(Week_Number, Weeks, W, D, S):-
 find_timing(Week_Number, Weeks, W, D, S):-
                     Week_Number < Weeks, Next_Week is Week_Number + 1,
                     find_timing(Next_Week, Weeks, W, D, S).
+schedule([],_, S, S).
 
-schedule([], _, _,S, S).
+schedule(All_Events, All_Timings,C_Schedule, F_Schedule):-
+                    All_Events = [E_H|E_T],
+                    member(T,All_Timings),
+                    E_H = event(G,C,E_Name,E_Type),
+                    ET = event(G,C,E_Name,E_Type,T),
+                    append(C_Schedule, [ET], N_Schedule),
 
-schedule([E|Rem_Events], All_Groups, All_Timings, C_Schedule, F_Schedule):-
-                    member(Timing, All_Timings),
-                    E = event(C, E_Name, E_Type),
-                    ET = event(C, E_Name, E_Type, Timing),
-                    valid_event_timing(E, Timing, All_Groups),
-                    valid_schedule(All_Groups, [ET|C_Schedule]),
-                    schedule(Rem_Events, All_Groups, All_Timings, [ET|C_Schedule], F_Schedule).
-
-valid_schedule([], _).
-
-valid_schedule([G|Rem_Groups], Schedule):-
-                    precede(G, Schedule),
-                    valid_slot_schedule(G, Schedule),
-                    no_consec_quizzes(G, Schedule),
-                    no_same_day_quiz(G, Schedule),
-                    no_same_day_assignment(G, Schedule),
-                    no_holidays(G, Schedule),
-                    valid_schedule(Rem_Groups, Schedule).
-
-valid_event_timing(_, _, []).
-
-valid_event_timing(E, T, [G|Rem_Groups]):-
-                    group_events(G, Events), \+member(E, Events),
-                    valid_event_timing(E, T, Rem_Groups).
-
-valid_event_timing(E, T, [G|Rem_Groups]):-
-                    group_events(G, Events), member(E, Events),
-                    T = timing(_, D, S),
-                    available_timings(G, L), member(timing(D, S), L),
-                    valid_event_timing(E, T, Rem_Groups).
+                    precede(G,N_Schedule),
+                    valid_slot_schedule(G,N_Schedule),
+                    no_same_day_quiz(G,N_Schedule),
+                    no_same_day_assignment(G,N_Schedule),
+                    no_consec_quizzes(G,N_Schedule),
+                    % no_holidays(G,N_Schedule),
+                    schedule(E_T,All_Timings,N_Schedule,F_Schedule).
