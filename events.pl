@@ -57,10 +57,10 @@ studying(csen402, group4MET).
 studying(math401, group4MET).
 studying(elct401, group4MET).
 
-studying(csen601, group6MET).
-studying(csen602, group6MET).
-studying(csen603, group6MET).
-studying(csen604, group6MET).
+% studying(csen601, group6MET).
+% studying(csen602, group6MET).
+% studying(csen603, group6MET).
+% studying(csen604, group6MET).
 
 should_precede(csen403,project1,project2).
 should_precede(csen403,quiz1,quiz2).

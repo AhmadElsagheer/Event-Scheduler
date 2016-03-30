@@ -198,15 +198,16 @@ schedule(All_Events, All_Timings,C_Schedule, F_Schedule):-
                     All_Events = [E_H|E_T],
                     member(T,All_Timings),
                     E_H = event(G,C,E_Name,E_Type),
-                    T = timing(_, D, S),
-                    quizslot(G, D, S),
                     ET = event(G,C,E_Name,E_Type,T),
-
+                    T = timing(_, D, S),
+                    available_timings(G, Quizslots),
+                    member(timing(D, S), Quizslots),
                     append(C_Schedule, [ET], N_Schedule),
                     precede(G,N_Schedule),
                     valid_slot_schedule(G,N_Schedule),
-                    no_same_day_quiz(G,N_Schedule),
-                    no_same_day_assignment(G,N_Schedule),
-                    no_consec_quizzes(G,N_Schedule),
-                    no_holidays(G,N_Schedule),
+                    % no_consec_quizzes(G,N_Schedule),
+                    %no_same_day_quiz(G,N_Schedule),
+                    % no_same_day_assignment(G,N_Schedule),
+
+                     no_holidays(G,N_Schedule),
                     schedule(E_T,All_Timings,N_Schedule,F_Schedule).
