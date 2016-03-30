@@ -119,7 +119,7 @@ no_same_day_quiz([ET_H|ET_T]):-
 
 no_same_day_quiz([ET_H|ET_T]):-
                     ET_H = event(_, _, quiz, _),
-                    no_same_day_quiz(ET_H, ET_T),
+                    quiz_not_same_day_quizzes(ET_H, ET_T),
                     no_same_day_quiz(ET_T).
 
 quiz_not_same_day_quizzes(_, []).
@@ -147,7 +147,7 @@ no_same_day_assignment([ET_H|ET_T]):-
 
 no_same_day_assignment([ET_H|ET_T]):-
                     ET_H = event(_, _, assignment, _),
-                    no_same_day_assignment(ET_H, ET_T),
+                    ass_not_same_day_assignments(ET_H, ET_T),
                     no_same_day_assignment(ET_T).
 
 ass_not_same_day_assignments(_, []).
@@ -202,12 +202,12 @@ schedule(All_Events, All_Timings,C_Schedule, F_Schedule):-
                     T = timing(_, D, S),
                     available_timings(G, Quizslots),
                     member(timing(D, S), Quizslots),
+                    % N_Schedule = [ET|C_Schedule],
                     append(C_Schedule, [ET], N_Schedule),
                     precede(G,N_Schedule),
                     valid_slot_schedule(G,N_Schedule),
-                    % no_consec_quizzes(G,N_Schedule),
-                    %no_same_day_quiz(G,N_Schedule),
-                    % no_same_day_assignment(G,N_Schedule),
-
-                     no_holidays(G,N_Schedule),
+                    no_consec_quizzes(G,N_Schedule),
+                    no_same_day_quiz(G,N_Schedule),
+                    no_same_day_assignment(G,N_Schedule),
+                    no_holidays(G,N_Schedule),
                     schedule(E_T,All_Timings,N_Schedule,F_Schedule).
