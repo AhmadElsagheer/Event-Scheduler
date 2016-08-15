@@ -81,6 +81,7 @@ should_precede(csen403,quiz1,quiz2).
 should_precede(csen403,quiz2,quiz3).
 
 quizslot(group4MET, tuesday, 1).
+quizslot(group4MET, tuesday, 5).
 quizslot(group4MET, thursday, 3).
 quizslot(group6MET, saturday, 5).
 quizslot(group6MET, wednesday, 4).
